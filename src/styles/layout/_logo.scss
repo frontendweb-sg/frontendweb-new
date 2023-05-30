@@ -1,0 +1,17 @@
+.navbar-brand {
+  font-weight: 900;
+  font-style: italic;
+  font-size: 1.25rem;
+  display: block;
+
+
+  .fw-brand-name {
+    line-height: 1.1;
+
+    letter-spacing: 0.04rem;
+  }
+
+  .fw-brand-tagline {
+    font-size: $font-size-base - 0.1rem;
+  }
+}

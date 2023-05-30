@@ -1,0 +1,42 @@
+$white: #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black: #000 !default;
+
+$primary:#1f1f40 !default;
+$secondary: #e12454 !default;
+
+$body-bg: $white !default;
+$body-color: $primary !default;
+
+$body-secondary-color: rgba($body-color, .75) !default;
+$body-secondary-bg: $gray-200 !default;
+
+$font-size-base: 0.875rem !default;
+
+$variable-prefix: fw- !default; // Deprecated in v5.2.0 for the shorter `$prefix`
+$prefix: $variable-prefix !default;
+
+
+
+$h1-font-size: $font-size-base * 2.5; // 30
+$h2-font-size: $font-size-base * 2; // 26
+$h3-font-size: $font-size-base * 1.75; // 24
+$h4-font-size: $font-size-base * 1.5; // 20
+$h5-font-size: $font-size-base * 1.25; // 18
+$h6-font-size: $font-size-base; // 16
+
+
+$avatar-size:(xs:35px,
+  sm:45px,
+  md:55px,
+  lg:80px,
+  xl:100px,
+  2xl:150px) !default;

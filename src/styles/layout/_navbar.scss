@@ -1,0 +1,20 @@
+.navbar {
+  &-nav {
+    --fw-nav-link-color: #{$white};
+    --fw-nav-link-hover-color:#{$secondary};
+    --fw-navbar-active-color:#{$secondary};
+  }
+
+
+  &-user {
+    .dropdown-toggle {
+      padding-right: 10px;
+
+      &:after {
+        position: absolute;
+        top: 46%;
+        right: 0
+      }
+    }
+  }
+}

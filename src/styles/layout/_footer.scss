@@ -1,0 +1,19 @@
+.footer {
+
+  padding-top: 100px;
+  padding-bottom: 20px;
+
+  .nav {
+    --fw-nav-link-padding-y: 0.3rem;
+  }
+
+  .nav-link {
+    padding-left: 0;
+    padding-right: 0;
+    display: inline-block;
+
+    &:hover {
+      color: $secondary;
+    }
+  }
+}

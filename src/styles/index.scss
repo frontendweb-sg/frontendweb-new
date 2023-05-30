@@ -1,0 +1,11 @@
+@import "./settings/variables";
+@import "bootstrap/scss/bootstrap";
+@import "./base/init";
+
+@import "./layout/logo";
+@import "./layout/navbar";
+@import "./layout/footer";
+@import "./form/input";
+
+
+@import "./components/avatar";

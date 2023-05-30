@@ -1,0 +1,17 @@
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+}
+
+body {
+  font-weight: 400;
+  height: inherit;
+
+  display: flex;
+  flex-direction: column;
+
+  >main {
+    flex: 1
+  }
+}
