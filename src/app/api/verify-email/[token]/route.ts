@@ -7,12 +7,14 @@ export async function GET(
   { params }: { params: { token: string } }
 ) {
   const url = req.nextUrl.clone();
-  url.pathname = "/auth";
   const verify = Jwt.verifyToken(params.token) as any;
+  url.pathname = encodeURI("/auth/email-verification");
+
+  let isTrue: string = new Boolean(!!verify).toString();
+  url.searchParams.set("success", isTrue);
 
   const date = new Date(verify.exp * 1000);
   if (!verify) return NextResponse.redirect(url);
-
   const user = await User.findOne({ email: verify.email });
   if (user && date > new Date()) {
     await User.findByIdAndUpdate(
@@ -23,11 +25,7 @@ export async function GET(
       { new: true }
     );
 
-    setTimeout(() => {
-      NextResponse.redirect(url);
-    }, 3000);
-
-    return NextResponse.json({ message: "Email verified, please login" });
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.json({
