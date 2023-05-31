@@ -1,3 +1,4 @@
+import { Password } from "@/lib/password";
 import mongoose, { Schema, Document } from "mongoose";
 
 export const USER_TABLE_NAME = "user";
@@ -17,9 +18,10 @@ export interface IUser {
   firebase_uid: string;
   role: Role;
   active: boolean;
-  verify: boolean;
   token?: string;
   tokenEpiration?: string;
+  emailVerified?: boolean;
+  emailVerificationToken?: string;
 }
 export interface IUserDoc extends Document<IUser>, IUser {}
 const schema = new Schema(
@@ -34,9 +36,10 @@ const schema = new Schema(
     firebase_uid: { type: String },
     role: { type: String, default: Role.user, enum: Role },
     active: { type: Boolean, default: true },
-    verify: { type: Boolean, default: false },
     token: { type: String, default: "" },
     tokenEpiration: { type: String, default: "" },
+    emailVerified: { type: Boolean, default: false },
+    emailVerificationToken: { type: String, default: "" },
   },
   {
     timestamps: true,
@@ -55,8 +58,13 @@ const schema = new Schema(
 
 schema.pre("save", function (next) {
   if (this.isModified("password")) {
-  
+    const password = Password.hash(this.get("password"));
+    if (password) {
+      this.set("password", password);
+    }
   }
+  let role = this.get("role");
+  this.set("emailVerified", role === "admin");
   next();
 });
 
