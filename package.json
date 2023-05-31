@@ -2,6 +2,11 @@
 	"name": "frontendweb",
 	"version": "0.1.0",
 	"private": true,
+	"engines": {
+		"node": ">=14.0.0",
+		"npm": ">=8.0.0",
+		"yarn": "Pleas use npm"
+	},
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
