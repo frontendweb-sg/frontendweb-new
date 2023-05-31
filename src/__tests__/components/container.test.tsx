@@ -1,6 +1,6 @@
 import Container from "@/components/ui/Container";
 import type { ContainerProps } from "@/components/ui/Container";
-import { render, screen } from "../../test-util";
+import { render, screen } from "@/test-util";
 
 const setup = (props?: ContainerProps) =>
 	render(<Container {...props}>test</Container>);

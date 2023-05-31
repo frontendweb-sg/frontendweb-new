@@ -7,20 +7,21 @@ import { forwardRef } from "react";
  * @param param0
  * @returns
  */
-interface FormGropProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
-  align?: Align;
-  label?: string;
+export interface FormGropProps
+	extends React.HtmlHTMLAttributes<HTMLDivElement> {
+	align?: Align;
+	label?: string;
 }
 const FormGroup = forwardRef<HTMLDivElement, FormGropProps>(
-  ({ children, className, align, label, ...rest }, ref) => {
-    const classes = classNames("form-group mb-3", "text-" + align, className);
-    return (
-      <div className={classes} ref={ref} {...rest}>
-        {label && <label className="form-label">{label}</label>}
-        {children}
-      </div>
-    );
-  }
+	({ children, className, align, label, ...rest }, ref) => {
+		const classes = classNames("form-group mb-3", "text-" + align, className);
+		return (
+			<div data-testid="form-group" className={classes} ref={ref} {...rest}>
+				{label && <label className="form-label">{label}</label>}
+				{children}
+			</div>
+		);
+	}
 );
 
 export default FormGroup;
