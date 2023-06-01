@@ -12,7 +12,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"test": "jest --watch",
+		"test": "jest --watchAll",
 		"prepare": "husky install"
 	},
 	"lint-staged": {
