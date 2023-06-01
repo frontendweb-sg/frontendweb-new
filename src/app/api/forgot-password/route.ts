@@ -1,68 +1,50 @@
-import { connectDb } from "@/lib/db";
-import { IUser, IUserDoc, User } from "@/models/user";
-import { NextResponse } from "next/server";
-import { BadRequestError } from "../errors/bad-request-error";
+import { NextRequest, NextResponse } from "next/server";
 import { CustomError } from "../errors/custom-error";
-import { mailer } from "@/lib/mailer";
-import { randomBytes } from "crypto";
 import { Jwt } from "@/lib/jwt";
-
+import { IUserDoc, User } from "@/models/user";
+import { mailer } from "@/lib/mailer";
+import { NotFoundError } from "../errors/not-found-error";
+import { BadRequestError } from "../errors/bad-request-error";
 /**
- * Signup
+ * Forgot handler
  * @param req
  * @returns
  */
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
 	try {
-		await connectDb();
+		const nexturl = req.nextUrl.clone();
+		const { email } = await req.json();
 
-		const body = (await req.json()) as IUser;
+		const user = (await User.findOne({ email })) as IUserDoc;
 
-		if (body.firstname === "")
-			throw new BadRequestError("First name is required!");
-		if (body.lastname === "")
-			throw new BadRequestError("Last name is required!");
-		if (body.email === "") throw new BadRequestError("Email is required!");
-		if (body.password === "")
-			throw new BadRequestError("Password is required!");
-		if (body.mobile === "") throw new BadRequestError("Mobile is required!");
-
-		const hasUser = (await User.findOne({
-			$or: [{ email: body.email }, { mobile: body.mobile }],
-		})) as IUserDoc;
-
-		let message = "";
-		if (hasUser) {
-			if (body.email === hasUser.email) {
-				message =
-					"Eail already existed, please registered with different email id";
-			}
-			if (body.mobile === hasUser.mobile) {
-				message =
-					"Mobile already existed, please registered with different mobile number";
-			}
-			throw new BadRequestError(message);
+		if (!user) {
+			throw new NotFoundError(
+				"Your account is not found, please register first"
+			);
 		}
 
-		const newUser = new User(body);
-		newUser.emailVerificationToken = Jwt.genToken({
-			email: newUser.email,
-			id: newUser.id,
+		if (!user.emailVerified) {
+			throw new BadRequestError(
+				"Your account is not verified yet, check your mail and click to verfiy button"
+			);
+		}
+
+		user.emailVerificationToken = Jwt.genToken({
+			email: user.email,
+			id: user.id,
 		});
 
-		const result = (await newUser.save()) as IUserDoc;
+		const url = `${process.env.NEXTAUTH_URL}/forgot-password/${user.emailVerificationToken}`;
 
-		if (result.role !== "admin") {
-			mailer.send({
-				from: "frontendweb.sg@gmail.com",
-				to: result.email,
-				subject: "Frontend Web - Registration",
-				text: "Welcome to our website",
-				html: `
-      <!DOCTYPE html>
+		mailer.send({
+			from: "frontendweb.sg@gmail.com",
+			to: email,
+			subject: "Forgot password",
+			text: "",
+			html: `<!DOCTYPE html>
         <html>
           <head>
-            <title>Frontend Web - Registration</title>
+            <title>Frontend Web - Reset password</title>
             <style>
       .table {
         width: 500px;
@@ -144,23 +126,21 @@ export async function POST(req: Request) {
         <tr>
           <td style="padding: 50px 20px">
             <div style="padding-bottom: 15px">
-              <h1>Dev connections</h1>
+              <h1>frontendweb</h1>
             </div>
 
             <div style="background: #fff; padding: 30px 20px">
               <h2>Almost done!</h2>
               <hr />
               <h6 style="margin-top: 15px">
-                Welcome ${result.firstname} - ${result.lastname}
+                Welcome ${user.firstname} - ${user.lastname}
               </h6>
               <p>You have successfully registerd.</p>
 
               <p>Please click below button to confirm your email address.</p>
 
               <a
-                href="${process.env.NEXTAUTH_URL}/api/verify-email/${
-					result.emailVerificationToken
-				}"
+                href="${url}"
                 class="btn"
                 >Confirm Account</a
               >
@@ -170,13 +150,9 @@ export async function POST(req: Request) {
               </p>
 
               <span
-                data-token="${process.env.NEXTAUTH_URL}/api/verify-email/${
-					result.emailVerificationToken
-				}"
+                data-token="${url}"
                 class="p-large"
-                >${process.env.NEXTAUTH_URL}/api/verify-email/${
-					result.emailVerificationToken
-				}</span
+                >${url}</span
               >
 
               <p class="p-small">
@@ -203,7 +179,7 @@ export async function POST(req: Request) {
                 account. if it looks weired,
                 <a href="" style="color: #c90063"> View it in your browser.</a>
               </p>
-               <p class="p-small">
+              <p class="p-small">
                 Copyright &copy; ${
 									new Date().getFullYear
 								}, <b>frontendweb.in</b>
@@ -214,12 +190,12 @@ export async function POST(req: Request) {
       </tbody>
     </table>
           </body>
-        </html>
-      `,
-			});
-		}
-
-		return NextResponse.json(result);
+        </html>`,
+		});
+		return NextResponse.json({
+			status: 200,
+			message: "Email sent",
+		});
 	} catch (error) {
 		if (error instanceof CustomError)
 			return NextResponse.json({
