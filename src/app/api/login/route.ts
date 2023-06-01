@@ -13,37 +13,41 @@ import { CustomError } from "../errors/custom-error";
  * @returns
  */
 export async function POST(req: Request) {
-  try {
-    await connectDb();
-    const body = (await req.json()) as { email: string; password: string };
+	try {
+		await connectDb();
+		const body = (await req.json()) as { email: string; password: string };
 
-    const user = (await User.findOne({
-      $or: [{ email: body.email }, { mobile: body.email }],
-    })) as IUserDoc;
+		if (!body.email || !body.password) {
+			throw new BadRequestError("Please provide email and password!");
+		}
 
-    if (!user) {
-      throw new BadRequestError("User not existed, Please register!");
-    }
+		const user = (await User.findOne({
+			$or: [{ email: body.email }, { mobile: body.email }],
+		})) as IUserDoc;
 
-    let verify = Password.compare(body.password, user.password);
-    if (!verify) {
-      throw new AuthError(
-        "Password is not matched, please check your password!"
-      );
-    }
+		if (!user) {
+			throw new BadRequestError("User not existed, Please register!");
+		}
 
-    user.token = Jwt.genToken({
-      email: user.email,
-      id: user.id,
-    });
+		let verify = Password.compare(body.password, user.password);
+		if (!verify) {
+			throw new AuthError(
+				"Password is not matched, please check your password!"
+			);
+		}
 
-    return NextResponse.json(user);
-  } catch (error) {
-    if (error instanceof CustomError)
-      return NextResponse.json({
-        status: error.status,
-        message: error.message,
-      });
-    else console.log(error);
-  }
+		user.token = Jwt.genToken({
+			email: user.email,
+			id: user.id,
+		});
+
+		return NextResponse.json(user);
+	} catch (error) {
+		if (error instanceof CustomError)
+			return NextResponse.json({
+				status: error.status,
+				message: error.message,
+			});
+		else console.log(error);
+	}
 }
