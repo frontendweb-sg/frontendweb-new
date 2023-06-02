@@ -39,9 +39,8 @@ export async function POST(req: NextRequest) {
 			},
 			{ expiresIn: "24h" }
 		);
-
-		const url = `${process.env.NEXTAUTH_URL}/change-password/${user.emailVerificationToken}`;
 		await user.save();
+		const url = `${process.env.NEXTAUTH_URL}/reset-password/${user.emailVerificationToken}`;
 
 		mailer.send({
 			from: process.env.MAILER_USER!,
@@ -188,7 +187,7 @@ export async function POST(req: NextRequest) {
 		});
 		return NextResponse.json({
 			status: 200,
-			message: "Email sent",
+			message: "Email sent, please check your mail",
 		});
 	} catch (error) {
 		if (error instanceof CustomError)

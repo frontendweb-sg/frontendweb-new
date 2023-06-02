@@ -1,0 +1,25 @@
+@hostname = http://localhost
+@port = 3000
+@host = {{hostname}}:{{port}} 
+@contentType = application/json
+
+## Login user 
+POST {{host}}/api/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "pkumar2@pythian.com",
+    "password": "Admin8891@"
+}
+
+## Register user
+POST {{host}}/api/signup HTTP/1.1
+content-type: application/json
+
+{
+    "firstname":"Pradeep",
+    "lastname":"Kumar",
+    "email": "pkumar2@pythian.com",
+    "password": "Admin8891@",
+    "mobile":"1000000000"
+}

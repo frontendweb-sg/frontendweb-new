@@ -32,6 +32,8 @@ const ChangePassword = ({ token, ...rest }: ChangePasswordProps) => {
 			},
 			validationSchema: validation,
 			onSubmit: async (values, { setSubmitting }) => {
+				try {
+				} catch (error) {}
 				console.log("values", values);
 				setSubmitting(false);
 			},
