@@ -21,4 +21,10 @@ export const AppContent = {
 	browse: "Browse",
 	or: "Or",
 	forgotPassword: "Forgot password",
+	resetPassword: "Reset password",
+	forgotPasswordText: "FORGOT<br />Your password?",
+	notToWorryText: "Not to worry, we got you! Let's get you a new password.",
+	resetNotRequestText:
+		"If you didn't request a password reset, you can ignore this email. Your password will not be changed.",
+	needMoreHelp: "Need more help?",
 };

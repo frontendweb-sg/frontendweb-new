@@ -61,7 +61,9 @@ const Input = forwardRef<inpRef, InputProps>(
 				</div>
 				{errors?.[name as keyof typeof errors] &&
 					touched?.[name as keyof typeof errors] && (
-						<div className="invalid-feedback">Filed is required!</div>
+						<div className="invalid-feedback">
+							{errors?.[name as keyof typeof errors] as string}
+						</div>
 					)}
 			</FormGroup>
 		);
