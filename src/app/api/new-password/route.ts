@@ -27,8 +27,7 @@ export async function PUT(
 				emailVerificationToken: token,
 			},
 			{
-				$set: { password: Password.hash(password) },
-				$unset: { emailVerificationToken: "" },
+				$set: { password: Password.hash(password), emailVerificationToken: "" },
 			}
 		)) as IUserDoc;
 	} catch (error) {
