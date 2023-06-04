@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { CustomError } from "../errors/custom-error";
+import { CustomError } from "../../errors/custom-error";
+import { BadRequestError } from "../../errors/bad-request-error";
 import { IUserDoc, User } from "@/models/user";
 import { Jwt } from "@/lib/jwt";
-import { BadRequestError } from "../errors/bad-request-error";
 import { Password } from "@/lib/password";
 
 /**
@@ -21,6 +21,7 @@ export async function PUT(
 
 		if (!verify) throw new BadRequestError("Invalid token");
 
+		console.log("ve", verify);
 		const user = (await User.findOneAndUpdate(
 			{
 				email: verify.email,
@@ -32,6 +33,11 @@ export async function PUT(
 		)) as IUserDoc;
 
 		console.log("user", user);
+		return NextResponse.json({
+			status: 200,
+			message: "Password changed successfull",
+			user,
+		});
 	} catch (error) {
 		if (error instanceof CustomError)
 			return NextResponse.json({
