@@ -39,8 +39,9 @@ export async function POST(req: NextRequest) {
 			},
 			{ expiresIn: "24h" }
 		);
+
 		await user.save();
-		const url = `${process.env.NEXTAUTH_URL}/reset-password/${user.emailVerificationToken}`;
+		const url = `${process.env.NEXTAUTH_URL}/auth/reset-password/${user.emailVerificationToken}`;
 
 		mailer.send({
 			from: process.env.MAILER_USER!,

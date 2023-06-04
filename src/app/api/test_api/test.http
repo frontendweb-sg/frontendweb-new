@@ -23,3 +23,11 @@ content-type: application/json
     "password": "Admin8891@",
     "mobile":"1000000000"
 }
+
+## reset password
+POST {{host}}/api/reset-password HTTP/1.1
+Content-Type: application/json
+
+{
+    "email":"pkumar2@pythian.com"
+}
