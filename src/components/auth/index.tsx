@@ -13,10 +13,16 @@ import Box from "../ui/Box";
  * @returns
  */
 const Auth = () => {
+	const { data: session, status } = useSession();
 	const [isSignup, setIsSignup] = useState(false);
+
+	console.log(status);
 
 	return (
 		<Box className="auth">
+			{status === "loading" && (
+				<Typography>Please wait. authenticating...</Typography>
+			)}
 			<Box className="auth-form-title">
 				<Typography variant="h3">
 					{isSignup ? AppContent.signUp : AppContent.signIn}

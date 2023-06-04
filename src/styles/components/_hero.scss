@@ -1,0 +1,10 @@
+.hero {
+	background-color: $primary;
+	padding: 100px 20px;
+	color: $white;
+
+	h4,
+	h1 {
+		color: inherit;
+	}
+}

@@ -1,5 +1,7 @@
 import "../styles/index.scss";
 import { inter, lato, roboto } from "../lib/font";
+import AuthProvider from "@/context/AuthProvider";
+import ThemeProvider from "@/context/ThemeProvider";
 
 export const metadata = {
 	title: "Create Next App",
@@ -14,7 +16,9 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${inter.variable} ${lato.variable} ${roboto.variable}`}>
-				{children}
+				<AuthProvider>
+					<ThemeProvider>{children}</ThemeProvider>
+				</AuthProvider>
 			</body>
 		</html>
 	);

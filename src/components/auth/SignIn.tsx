@@ -4,8 +4,9 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import * as yup from "yup";
 import { AppContent } from "@/utils/AppContent";
+import { AppRoutes } from "@/utils/AppRoutes";
 import { FaEnvelope, FaKey } from "react-icons/fa";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { BsKey } from "react-icons/bs";
 
@@ -72,7 +73,7 @@ const LoginForm = () => {
 			/>
 
 			<div className="flex items-center justify-between mb-3">
-				<Link href="/auth/forgot-password">
+				<Link href={AppRoutes.resetPassword}>
 					<BsKey className="me-2" />
 					{AppContent.forgotPassword}
 				</Link>
