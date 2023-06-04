@@ -19,20 +19,19 @@ export async function PUT(
 
 		const verify = Jwt.verifyToken(token) as any;
 
-		if (!verify) throw new BadRequestError("Invalid token");
+		if (!verify || verify.exp * 1000 < new Date().getTime())
+			throw new BadRequestError("Invalid token");
 
-		console.log("ve", verify);
 		const user = (await User.findOneAndUpdate(
 			{
 				email: verify.email,
-				emailVerificationToken: token,
+				resetToken: token,
 			},
 			{
-				$set: { password: Password.hash(password), emailVerificationToken: "" },
+				$set: { password: Password.hash(password), resetToken: "" },
 			}
 		)) as IUserDoc;
 
-		console.log("user", user);
 		return NextResponse.json({
 			status: 200,
 			message: "Password changed successfull",

@@ -32,16 +32,13 @@ export async function POST(req: NextRequest) {
 			);
 		}
 
-		user.emailVerificationToken = Jwt.genToken(
-			{
-				email: user.email,
-				id: user.id,
-			},
-			{ expiresIn: "24h" }
-		);
+		user.resetToken = Jwt.genToken({
+			email: user.email,
+			id: user.id,
+		});
 
 		await user.save();
-		const url = `${process.env.NEXTAUTH_URL}/auth/reset-password/${user.emailVerificationToken}`;
+		const url = `${process.env.NEXTAUTH_URL}/auth/reset-password/${user.resetToken}`;
 
 		mailer.send({
 			from: process.env.MAILER_USER!,
