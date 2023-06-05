@@ -5,8 +5,9 @@ import LoginForm from "./SignIn";
 import Link from "next/link";
 import { useState } from "react";
 import { AppContent } from "@/utils/AppContent";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Box from "../ui/Box";
+import Button from "../ui/Button";
 
 /**
  * Auth component
@@ -16,7 +17,7 @@ const Auth = () => {
 	const { data: session, status } = useSession();
 	const [isSignup, setIsSignup] = useState(false);
 
-	console.log(status);
+	console.log(status, session);
 
 	return (
 		<Box className="auth">
@@ -62,6 +63,10 @@ const Auth = () => {
 			{isSignup ? <Signup /> : <LoginForm />}
 			<div className="auth-social">
 				<span>Or</span>
+
+				<Button onClick={() => signIn("github", { redirect: false })}>
+					Github
+				</Button>
 			</div>
 		</Box>
 	);

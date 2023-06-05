@@ -1,12 +1,16 @@
 import axios from "axios";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-
+import Github from "next-auth/providers/github";
 /**
  * Handler
  */
 const handler = NextAuth({
 	providers: [
+		Github({
+			clientId: process.env.GITHUB_CLIENTID!,
+			clientSecret: process.env.GITHUB_SECRET_KEY!,
+		}),
 		Credentials({
 			name: "Credentials",
 			credentials: {
@@ -37,8 +41,15 @@ const handler = NextAuth({
 			},
 		}),
 	],
+
 	callbacks: {
-		jwt({ user, token }) {
+		async signIn({ user, account, profile, email, credentials }) {
+			if (account?.provider === "github") {
+				console.log("profile", profile);
+			}
+			return true;
+		},
+		jwt({ user, token, account }) {
 			return { ...user, ...token };
 		},
 		session({ session, token }) {
