@@ -1,8 +1,10 @@
+"use client";
 import Logo from "@/components/layout/Logo";
 import Col from "@/components/ui/Col";
 import Container from "@/components/ui/Container";
 import Row from "@/components/ui/Row";
 import Typography from "@/components/ui/Typography";
+import { useRedirect } from "@/hooks/useRedirect";
 import { ReactNode } from "react";
 
 const Layout = ({
@@ -12,6 +14,8 @@ const Layout = ({
 	renderProps: ReactNode;
 	children: ReactNode;
 }) => {
+	useRedirect();
+
 	return (
 		<Container isFull cover>
 			{children}

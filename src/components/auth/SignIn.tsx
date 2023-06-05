@@ -1,13 +1,14 @@
-import { useFormik } from "formik";
+import React from "react";
 import Form from "../ui/Form";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
+import Link from "next/link";
 import * as yup from "yup";
+import { useFormik } from "formik";
 import { AppContent } from "@/utils/AppContent";
 import { AppRoutes } from "@/utils/AppRoutes";
 import { FaEnvelope, FaKey } from "react-icons/fa";
 import { signIn, useSession } from "next-auth/react";
-import Link from "next/link";
 import { BsKey } from "react-icons/bs";
 
 const validation = yup.object().shape({
@@ -15,12 +16,17 @@ const validation = yup.object().shape({
 	password: yup.string().required(),
 });
 
-export interface loginProps {
+export interface IUser {
 	email: string;
 	password: string;
 }
 
-const LoginForm = () => {
+type LoginProps = React.FormHTMLAttributes<HTMLFormElement> & {
+	errorHandler: (error: string | null) => void;
+	setLoading: (value: boolean) => void;
+};
+
+const LoginForm = ({ setLoading, errorHandler, ...rest }: LoginProps) => {
 	const {
 		isSubmitting,
 		values,
@@ -31,24 +37,31 @@ const LoginForm = () => {
 		handleSubmit,
 	} = useFormik({
 		initialValues: {
-			email: "",
-			password: "",
+			email: "pkumar2@pythian.com",
+			password: "Admin1234@",
 		},
 		validationSchema: validation,
-		onSubmit: async (values: loginProps) => {
-			console.log("values", values);
+		onSubmit: async (values: IUser) => {
+			setLoading(true);
 			const result = await signIn("credentials", {
 				email: values.email,
 				password: values.password,
 				redirect: false,
 			});
 
-			console.log("result", result);
+			if (result?.error) {
+				errorHandler(result?.error);
+			}
+
+			if (!result?.error) {
+				errorHandler(null);
+			}
+			setLoading(false);
 		},
 	});
 
 	return (
-		<Form onSubmit={handleSubmit}>
+		<Form onSubmit={handleSubmit} {...rest}>
 			<Input
 				name="email"
 				type="email"

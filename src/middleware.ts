@@ -1,16 +1,21 @@
 import { withAuth } from "next-auth/middleware";
+import { NextResponse } from "next/server";
 
 export default withAuth(
+	// `withAuth` augments your `Request` with the user's token.
 	function middleware(req) {
-		const nextUrl = req.nextUrl.clone();
+		const { pathname } = req.nextUrl;
+		const token = req.nextauth.token;
 
-		console.log(req.nextauth);
-		// if (
-		// 	nextUrl.pathname.startsWith("/admin") &&
-		// 	req.nextauth.role !== "admin"
-		// ) {
-		// 	console.log("redirecting to admin");
-		// }
+		if (pathname.startsWith("/admin") && token?.role === "user") {
+			return NextResponse.redirect(new URL("/user", req.url));
+		}
+
+		if (pathname.startsWith("/admin") && token?.role !== "admin") {
+			return NextResponse.redirect(
+				new URL("/auth?message=only admin can access this page", req.url)
+			);
+		}
 	},
 	{
 		callbacks: {
@@ -19,4 +24,6 @@ export default withAuth(
 	}
 );
 
-export const config = { matcher: ["/user/:path*", "/admin/:path*"] };
+export const config = {
+	matcher: ["/admin/:path*", "/user/:path*"],
+};

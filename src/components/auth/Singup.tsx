@@ -22,8 +22,11 @@ export interface loginProps {
 	confirmPassword: string;
 	mobile: string;
 }
-
-const Signup = () => {
+type SignupProps = React.FormHTMLAttributes<HTMLFormElement> & {
+	errorHandler: (error: string | null) => void;
+	setLoading: (value: boolean) => void;
+};
+const Signup = ({ errorHandler }: SignupProps) => {
 	const {
 		isSubmitting,
 		values,

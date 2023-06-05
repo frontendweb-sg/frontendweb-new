@@ -27,4 +27,5 @@ export const AppContent = {
 	resetNotRequestText:
 		"If you didn't request a password reset, you can ignore this email. Your password will not be changed.",
 	needMoreHelp: "Need more help?",
+	authenticating: "Please wait. authenticating...",
 };

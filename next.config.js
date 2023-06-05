@@ -6,6 +6,10 @@ const nextConfig = {
 		includePaths: [path.join(__dirname, "styles")],
 	},
 
+	// experimental: {
+	// 	topLevelAwait: true
+	// },
+	// output: "standalone"
 	// swcMinify: true,
 	// webpackDevMiddleware: config => {
 	//   config.watchOptions = {

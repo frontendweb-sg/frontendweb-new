@@ -31,9 +31,7 @@ export async function POST(req: Request) {
 
 		let verify = Password.compare(body.password, user.password);
 		if (!verify) {
-			throw new AuthError(
-				"Password is not matched, please check your password!"
-			);
+			throw new AuthError("Invalid password, please check your password!");
 		}
 
 		user.token = Jwt.genToken({
@@ -44,10 +42,13 @@ export async function POST(req: Request) {
 		return NextResponse.json(user);
 	} catch (error) {
 		if (error instanceof CustomError)
-			return NextResponse.json({
-				status: error.status,
-				message: error.message,
-			});
+			return NextResponse.json(
+				{
+					status: error.status,
+					message: error.message,
+				},
+				{ status: error.status }
+			);
 		else console.log(error);
 	}
 }

@@ -3,42 +3,59 @@ import Typography from "../ui/Typography";
 import Signup from "./Singup";
 import LoginForm from "./SignIn";
 import Link from "next/link";
+import Box from "../ui/Box";
+import Alert from "../ui/Alert";
 import { useState } from "react";
 import { AppContent } from "@/utils/AppContent";
 import { useSession } from "next-auth/react";
-import Box from "../ui/Box";
 
 /**
  * Auth component
  * @returns
  */
 const Auth = () => {
-	const { data: session, status } = useSession();
+	const [loading, setLoading] = useState<boolean>(false);
+	const [error, setError] = useState<string | null>(null);
 	const [isSignup, setIsSignup] = useState(false);
 
-	console.log(status);
+	const { status } = useSession({
+		required: true,
+		onUnauthenticated() {},
+	});
+
+	const onErrorHandler = (error: string | null) => setError(error);
+
+	const handler = (
+		event: React.MouseEvent<HTMLAnchorElement>,
+		value: boolean
+	) => {
+		event.preventDefault();
+		setIsSignup(value);
+	};
+
+	let title = isSignup ? AppContent.signUp : AppContent.signIn;
+	let authElement = isSignup ? (
+		<Signup errorHandler={onErrorHandler} setLoading={setLoading} />
+	) : (
+		<LoginForm errorHandler={onErrorHandler} setLoading={setLoading} />
+	);
 
 	return (
 		<Box className="auth">
-			{status === "loading" && (
-				<Typography>Please wait. authenticating...</Typography>
+			{error && <Alert color="danger">{error}</Alert>}
+			{status === "loading" && loading && (
+				<Alert>{AppContent.authenticating}</Alert>
 			)}
 			<Box className="auth-form-title">
-				<Typography variant="h3">
-					{isSignup ? AppContent.signUp : AppContent.signIn}
-				</Typography>
+				<Typography variant="h3">{title}</Typography>
 				<Typography variant="body2" className="text-sm mt-2 mb-4">
 					{isSignup ? (
 						<>
 							{AppContent.signInText}
 							<Link
 								href="/#"
-								onClick={(e) => {
-									e.preventDefault();
-									setIsSignup(false);
-								}}
 								className="text-blue ms-1"
-								passHref>
+								onClick={(e) => handler(e, false)}>
 								{AppContent.signInHere}
 							</Link>
 						</>
@@ -46,20 +63,18 @@ const Auth = () => {
 						<>
 							{AppContent.signupText}
 							<Link
-								className="text-blue ms-1"
-								onClick={(e) => {
-									e.preventDefault();
-									setIsSignup(true);
-								}}
 								href="/#"
-								passHref>
+								className="text-blue ms-1"
+								onClick={(e) => handler(e, true)}>
 								{AppContent.signUpHere}
 							</Link>
 						</>
 					)}
 				</Typography>
 			</Box>
-			{isSignup ? <Signup /> : <LoginForm />}
+
+			{authElement}
+
 			<div className="auth-social">
 				<span>Or</span>
 			</div>
