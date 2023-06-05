@@ -1,3 +1,6 @@
+import { connectDb } from "@/lib/db";
+import { User, IUserDoc } from "@/models/user";
+import { BadRequestError } from "../../errors/bad-request-error";
 import axios from "axios";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
@@ -45,11 +48,35 @@ const handler = NextAuth({
 	callbacks: {
 		async signIn({ user, account, profile, email, credentials }) {
 			if (account?.provider === "github") {
-				console.log("profile", profile);
+				await connectDb();
+
+				const user = (await User.findOne({
+					email: profile?.email,
+				})) as IUserDoc;
+
+				if (!user) {
+					const names = profile?.login.split("-");
+					const newUser = new User({
+						firstname: names[0],
+						lastname: names[1] ?? "",
+						photo_url: profile?.avatar_url,
+					});
+					console.log("newUser", newUser);
+				}
 			}
+
 			return true;
 		},
-		jwt({ user, token, account }) {
+		jwt({ user, token, account, profile, trigger, isNewUser, session }) {
+			console.log("a", {
+				user,
+				token,
+				account,
+				profile,
+				trigger,
+				isNewUser,
+				session,
+			});
 			return { ...user, ...token };
 		},
 		session({ session, token }) {
